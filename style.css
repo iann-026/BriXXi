@@ -1,0 +1,328 @@
+:root {
+  --bg: #F6F1E7;
+  --surface: #FFFDF8;
+  --ink: #2B2823;
+  --ink-soft: #534E45;
+  --muted: #8C8374;
+  --accent: #56705F;
+  --accent-ink: #F6F1E7;
+  --border: #E3DBC9;
+
+  --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1C1B18;
+    --surface: #242320;
+    --ink: #EAE5DA;
+    --ink-soft: #C9C2B3;
+    --muted: #8C857A;
+    --accent: #7FA08D;
+    --accent-ink: #15140F;
+    --border: #36342E;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 18px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+button { font-family: inherit; }
+
+a { color: var(--accent); }
+
+/* ---------- Topbar ---------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  text-decoration: none;
+  color: inherit;
+}
+
+.wordmark-name {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.wordmark-sub {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.wordmark:hover .wordmark-name,
+.wordmark:focus-visible .wordmark-name {
+  color: var(--accent);
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--space-1) var(--space-1);
+}
+
+.text-button:hover { text-decoration: underline; }
+
+/* ---------- Layout ---------- */
+
+#app {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+}
+
+.view {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.view > * + * {
+  margin-top: var(--space-3);
+}
+
+/* Belt-and-suspenders: ANY element with [hidden] must stay hidden,
+   regardless of what display value its own class sets. This is the same
+   bug class caught earlier for .view — fixing it generally this time. */
+[hidden] {
+  display: none !important;
+}
+
+/* ---------- Fortune card ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: var(--space-4) var(--space-3);
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(43, 40, 35, 0.06);
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+
+.card.fading { opacity: 0; }
+
+.date {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  margin: 0 0 var(--space-3);
+  text-transform: capitalize;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.date:hover,
+.date:focus-visible {
+  color: var(--accent);
+}
+
+.quote {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.quote.empty {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.3rem;
+}
+
+.link-button {
+  display: inline-block;
+  margin-top: var(--space-3);
+  padding: 0.6rem 1.1rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.link-button:hover { background: var(--accent); color: var(--accent-ink); }
+
+.primary-button {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button:hover { opacity: 0.92; }
+.primary-button:active { transform: translateY(1px); }
+
+/* ---------- Browse list ---------- */
+
+.back-link {
+  align-self: flex-start;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.back-link:hover { text-decoration: underline; }
+
+.breadcrumb {
+  display: flex;
+  align-items: baseline;
+  align-self: flex-start;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.breadcrumb .crumb-back {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-right: var(--space-2); /* fallback for engines without flexbox gap support */
+}
+
+.breadcrumb .crumb-back:hover { text-decoration: underline; }
+
+.breadcrumb .crumb-label {
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.browse-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-height: 65vh;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.browse-list li { border-bottom: 1px solid var(--border); }
+.browse-list li:last-child { border-bottom: none; }
+
+.browse-list li.browse-section-label {
+  padding: 0.5rem var(--space-3) 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.browse-row {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.browse-row:hover { background: var(--bg); }
+
+.browse-row .row-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.browse-row .row-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-soft);
+}
+
+.browse-row .row-meta {
+  color: var(--muted);
+  white-space: nowrap;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ---------- Footer ---------- */
+
+.foot {
+  text-align: center;
+  padding: var(--space-2);
+}
+
+.offline-notice {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------- Accessibility ---------- */
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 480px) {
+  .quote { font-size: 1.3rem; }
+  .card { padding: var(--space-3) var(--space-2); }
+}

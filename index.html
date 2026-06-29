@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Salvatore Brizzi — Saggezza mattutina</title>
+<meta name="description" content="Una perla al giorno dagli scritti di Salvatore Brizzi su X.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#F6F1E7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1B18" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="wordmark" href="https://x.com/salvatorebrizzi" target="_blank" rel="noopener noreferrer">
+    <span class="wordmark-name">Salvatore Brizzi</span>
+    <span class="wordmark-sub">Saggezza mattutina da X</span>
+  </a>
+  <button id="modeToggle" class="text-button" type="button" aria-pressed="false">
+    Sfoglia l'archivio
+  </button>
+</header>
+
+<main id="app">
+
+  <section id="fortuneView" class="view">
+    <a href="#" id="backToBrowse" class="back-link" hidden>&larr; Torna all'archivio</a>
+    <div class="card" id="card">
+      <a class="date" id="postDate" href="#" target="_blank" rel="noopener noreferrer"></a>
+      <blockquote class="quote" id="postText"></blockquote>
+      <a id="postLink" class="link-button" href="#" target="_blank" rel="noopener noreferrer" hidden>
+        Apri il contenuto&nbsp;↗
+      </a>
+    </div>
+    <button id="revealButton" class="primary-button" type="button">Un altro pensiero</button>
+  </section>
+
+  <section id="browseView" class="view" hidden>
+    <nav class="breadcrumb" id="breadcrumb" aria-label="Percorso nell'archivio"></nav>
+    <ul id="browseList" class="browse-list" aria-label="Archivio"></ul>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span id="offlineNotice" class="offline-notice" hidden>Modalità offline — contenuti salvati sul dispositivo.</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
