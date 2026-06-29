@@ -1,0 +1,56 @@
+name: Brizzi Daily Pipeline
+
+# Schedule rationale (see project memo): the auto-publish window is
+# 6:00-9:30 Europe/Rome LOCAL time. That window closes at:
+#   09:30 CET (winter) = 08:30 UTC   <- later of the two in UTC terms
+#   09:30 CEST (summer) = 07:30 UTC
+# 08:47 UTC is safely after BOTH, with a small buffer and deliberately
+# off the busy top-of-hour slot (scheduled-workflow delays are more
+# common exactly on the hour, per GitHub's own docs).
+"on":
+  schedule:
+    - cron: '47 8 * * *'
+  workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab, any time
+
+permissions:
+  contents: write   # needed so the script's own `git push` can succeed
+
+jobs:
+  daily-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30   # defensive backstop; the script's own 20-min rate-limit
+                           # cap should prevent this from ever being hit in practice
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history -- keeps the script's `git pull --rebase` simple and safe
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install twscrape
+
+      - name: Restore twscrape session
+        # The session lives in a single SQLite file (accounts.db) that
+        # twscrape manages itself. GitHub Actions starts from a totally
+        # empty VM every run, so it has to be reconstituted from the
+        # Secret each time. (The local/X260 fallback doesn't need this
+        # step at all -- the file's just already sitting there.)
+        run: echo "${{ secrets.TWSCRAPE_ACCOUNTS_DB_B64 }}" | base64 -d > accounts.db
+
+      - name: Configure git identity
+        # Needed for the commits the script makes -- actions/checkout
+        # already wires up push authentication via the ephemeral
+        # GITHUB_TOKEN (see `permissions:` above), this just sets who
+        # the commits are attributed to.
+        run: |
+          git config user.name "brizzi-daily-bot"
+          git config user.email "actions@users.noreply.github.com"
+
+      - name: Run daily pipeline
+        run: python3 daily_pipeline.py
