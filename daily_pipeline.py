@@ -185,6 +185,16 @@ async def _scrape_new_posts_async(since_utc: datetime) -> list:
     api = API()
     await api.pool.login_all()
 
+    # Fail loudly and immediately if there's no usable account, rather than
+    # letting twscrape's own default behavior (log a warning, return None)
+    # bubble up as "scraped 0 candidates" -- which looks identical to a
+    # genuinely quiet day and would silently mask a dead/expired session.
+    info = await api.pool.accounts_info()
+    active = [a for a in info if a["active"]]
+    if not active:
+        details = "; ".join(f"{a['username']}: {a['error_msg']}" for a in info) or "no accounts configured at all"
+        raise RuntimeError(f"No active twscrape account(s) -- session likely needs re-login. ({details})")
+
     # X's `since:` operator works on whole calendar dates, not exact times,
     # and its timezone interpretation isn't something I can verify without
     # live access to X — so rather than try to get that boundary exactly
