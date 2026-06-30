@@ -1,0 +1,13 @@
+# twscrape session — this is a live login credential. Never commit it.
+accounts.db
+
+# Local daily-pipeline backups (.bak-YYYY-MM-DD.json) — these are meant to
+# stay local-only on the X260, never pushed to the repo.
+*.bak-*.json
+
+# Stray base64 exports of accounts.db, if one's ever created again
+accounts_b64.txt
+
+# Python cache
+__pycache__/
+*.pyc

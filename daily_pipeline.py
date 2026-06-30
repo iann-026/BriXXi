@@ -22,6 +22,7 @@ Exit codes:
 
 import asyncio
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -47,6 +48,16 @@ RAG_EXPORT_FILENAME = "brizzi_rag_export.txt"
 
 SCRAPE_LIMIT = 1000              # generous cap; covers even a multi-month gap at ~1 post/day
 MAX_RATE_LIMIT_WAIT_SECONDS = 20 * 60   # see note near _parse_rate_limit_wait()
+
+# Explicit, never-ambiguous twscrape session path. Defaults to a plain
+# relative filename (matches GitHub Actions, which restores the secret
+# into its own cwd each run -- no change needed there). The LOCAL fallback
+# overrides this via TWSCRAPE_DB_PATH in its systemd service file, pointed
+# at one single stable absolute path -- specifically to stop `twscrape`'s
+# own relative-path default from spawning a new accidental empty database
+# every time some command happens to run from a different folder (which is
+# exactly how Gin ended up with 7+ stray copies on the X260).
+TWSCRAPE_DB_PATH = os.environ.get("TWSCRAPE_DB_PATH", "accounts.db")
 
 MONTHS_IT = {
     1: 'gennaio', 2: 'febbraio', 3: 'marzo', 4: 'aprile',
@@ -182,7 +193,7 @@ async def _scrape_new_posts_async(since_utc: datetime) -> list:
     # checks of the classification logic alone).
     from twscrape import API
 
-    api = API()
+    api = API(TWSCRAPE_DB_PATH)
     await api.pool.login_all()
 
     # Fail loudly and immediately if there's no usable account, rather than
