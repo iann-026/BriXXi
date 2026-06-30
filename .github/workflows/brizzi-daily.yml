@@ -9,7 +9,7 @@ name: Brizzi Daily Pipeline
 # common exactly on the hour, per GitHub's own docs).
 "on":
   schedule:
-    - cron: '47 8 * * *'
+    - cron: '*/30 4-8 * * *'
   workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab, any time
 
 permissions:

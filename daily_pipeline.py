@@ -43,7 +43,7 @@ ROME = ZoneInfo("Europe/Rome")
 # RAG export — LOCAL-ONLY (see note in main(): this directory only exists on
 # the X260, never on a GitHub Actions runner, and that's used deliberately
 # as the on/off switch rather than an extra config flag).
-RAG_EXPORT_DIR = Path("/home/nn/Brizzi-daily/__RAG_Updates__")
+RAG_EXPORT_DIR = Path(os.environ.get("RAG_EXPORT_DIR", "__RAG_Updates__"))
 RAG_EXPORT_FILENAME = "brizzi_rag_export.txt"
 
 SCRAPE_LIMIT = 1000              # generous cap; covers even a multi-month gap at ~1 post/day
@@ -370,13 +370,22 @@ def main():
     lookback_dt = newest_known_datetime(posts)
     print(f"Dynamic lookback anchor: newest known post at {lookback_dt.isoformat()} (local)")
 
-    try:
-        raw_posts = scrape_new_posts(since_utc=lookback_dt)
-    except NotImplementedError:
-        raise
-    except Exception as e:
-        print(f"FATAL: scraping failed — {e}")
-        sys.exit(1)
+    today_rome = datetime.now(ROME).date()
+    already_have_today = any(
+        datetime.fromisoformat(post["date"]).date() == today_rome for post in posts
+    )
+
+    if already_have_today:
+        print(f"Already have a post dated today ({today_rome.isoformat()}) — skipping scrape this run.")
+        raw_posts = []
+    else:
+        try:
+            raw_posts = scrape_new_posts(since_utc=lookback_dt)
+        except NotImplementedError:
+            raise
+        except Exception as e:
+            print(f"FATAL: scraping failed — {e}")
+            sys.exit(1)
 
     new_posts = classify_and_convert(raw_posts, known_ids)
     print(f"Scraped {len(raw_posts)} candidate post(s), {len(new_posts)} fall inside the morning window.")
