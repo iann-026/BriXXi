@@ -1,12 +1,11 @@
 name: Brizzi Daily Pipeline
 
 # Schedule rationale (see project memo): the auto-publish window is
-# 6:00-9:30 Europe/Rome LOCAL time. That window closes at:
-#   09:30 CET (winter) = 08:30 UTC   <- later of the two in UTC terms
-#   09:30 CEST (summer) = 07:30 UTC
-# 08:47 UTC is safely after BOTH, with a small buffer and deliberately
-# off the busy top-of-hour slot (scheduled-workflow delays are more
-# common exactly on the hour, per GitHub's own docs).
+# 6:00-9:30 Europe/Rome LOCAL time. The cron runs every 30 minutes
+# from 04:00 to 08:59 UTC, which covers the full window across both
+# CET (UTC+1, winter) and CEST (UTC+2, summer). The script's own
+# early-exit guard means only the first successful run of each day
+# does real work; subsequent runs skip the scrape instantly.
 "on":
   schedule:
     - cron: '*/30 4-8 * * *'
