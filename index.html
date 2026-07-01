@@ -26,6 +26,8 @@
 
 <main id="app">
 
+  <button id="infoBtn" class="info-glyph" type="button" aria-label="Informazioni">ⓘ</button>
+
   <section id="fortuneView" class="view">
     <a href="#" id="backToBrowse" class="back-link" hidden>&larr; Torna all'archivio</a>
     <div class="card" id="card">
@@ -35,14 +37,12 @@
         Apri il contenuto&nbsp;↗
       </a>
     </div>
-    <button class="info-glyph" type="button" aria-label="Informazioni">ⓘ</button>
     <button id="revealButton" class="primary-button" type="button">Un altro pensiero</button>
   </section>
 
   <section id="browseView" class="view" hidden>
     <nav class="breadcrumb" id="breadcrumb" aria-label="Percorso nell'archivio"></nav>
     <ul id="browseList" class="browse-list" aria-label="Archivio"></ul>
-    <button class="info-glyph" type="button" aria-label="Informazioni">ⓘ</button>
   </section>
 
   <section id="infoView" class="view info-view" hidden>

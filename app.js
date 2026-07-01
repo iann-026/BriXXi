@@ -11,6 +11,7 @@
     fortuneView: document.getElementById('fortuneView'),
     browseView: document.getElementById('browseView'),
     infoView: document.getElementById('infoView'),
+    infoBtn: document.getElementById('infoBtn'),
     backToBrowse: document.getElementById('backToBrowse'),
     infoBack: document.getElementById('infoBack'),
     card: document.getElementById('card'),
@@ -249,6 +250,7 @@
 
   function setViewMode(browsing) {
     els.infoView.hidden = true;
+    els.infoBtn.hidden = false;
     els.fortuneView.hidden = browsing;
     els.browseView.hidden = !browsing;
     els.modeToggle.setAttribute('aria-pressed', String(browsing));
@@ -260,6 +262,7 @@
     infoReturnBrowsing = !els.browseView.hidden;
     els.fortuneView.hidden = true;
     els.browseView.hidden = true;
+    els.infoBtn.hidden = true;
     els.infoView.hidden = false;
   }
 
@@ -276,9 +279,7 @@
     setViewMode(true);
   });
 
-  document.querySelectorAll('.info-glyph').forEach(btn => {
-    btn.addEventListener('click', () => showInfoView());
-  });
+  els.infoBtn.addEventListener('click', () => showInfoView());
 
   els.infoBack.addEventListener('click', (e) => {
     e.preventDefault();
