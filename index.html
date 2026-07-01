@@ -43,10 +43,32 @@
     <ul id="browseList" class="browse-list" aria-label="Archivio"></ul>
   </section>
 
+  <section id="infoView" class="view info-view" hidden>
+    <a href="#" id="infoBack" class="back-link">&larr; Torna</a>
+    <div class="info-content">
+      <h2 class="info-title">Informazioni</h2>
+
+      <p>SaggeXXa Mattutina raccoglie i post mattutini di Salvatore Brizzi pubblicati su X, organizzati come un piccolo oracolo quotidiano: apri la app o la pagina web e ricevi un pensiero, scelto a caso dall'archivio. Oppure sfoglia l'archivio per data.</p>
+
+      <p>I testi qui raccolti sono interamente di Salvatore Brizzi — questa app si limita ad archiviarli e renderli facilmente consultabili, giorno per giorno.<br>
+      L'idea di base è raccogliere i post mattutini a partire dal 27 aprile 2017. Il resto è un extra, e non c'è garanzia alcuna di completezza. La raccolta, salvo imprevisti tecnici, si dovrebbe aggiornare in tempo quasi reale.</p>
+
+      <p class="info-italic">La data sopra ogni pensiero è cliccabile: ti porta al post originale su X.<br>
+      Attenzione: se controlli un post su X senza essere connesso ad un account, l'orario mostrato sarà in <a href="https://it.wikipedia.org/wiki/Tempo_coordinato_universale" target="_blank" rel="noopener noreferrer">UTC</a>, non l'orario italiano — può sembrare diverso da quello indicato qui, anche se in realtà coincidono. Per vedere l'orario corretto, accedi al tuo account X prima di controllare.</p>
+
+      <hr class="info-divider">
+
+      <p class="info-technical">I testi sono in italiano. Se hai bisogno di una traduzione, il browser offre solitamente una funzione di traduzione automatica della pagina.</p>
+
+      <p class="info-technical">Questa app si può installare direttamente dal browser: su iOS, tocca "Condividi" &rarr; "Aggiungi a schermata Home"; su Android, il browser proporrà l'installazione automaticamente oppure cercala nel menu " &#8942; ". Su desktop con Chrome o Edge, cerca l'icona di installazione nella barra dell'indirizzo.</p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="foot">
   <span id="offlineNotice" class="offline-notice" hidden>Modalità offline — contenuti salvati sul dispositivo.</span>
+  <button id="infoBtn" class="info-glyph" type="button" aria-label="Informazioni">ⓘ</button>
 </footer>
 
 <script src="app.js"></script>

@@ -10,7 +10,10 @@
     modeToggle: document.getElementById('modeToggle'),
     fortuneView: document.getElementById('fortuneView'),
     browseView: document.getElementById('browseView'),
+    infoView: document.getElementById('infoView'),
     backToBrowse: document.getElementById('backToBrowse'),
+    infoBtn: document.getElementById('infoBtn'),
+    infoBack: document.getElementById('infoBack'),
     card: document.getElementById('card'),
     postDate: document.getElementById('postDate'),
     postText: document.getElementById('postText'),
@@ -27,6 +30,7 @@
   let lastIndex = -1;
   let browseReturnTarget = null;
   let browseState = { level: 'years' };
+  let infoReturnBrowsing = false;
 
   function groupPosts() {
     byYear = new Map();
@@ -245,11 +249,19 @@
   }
 
   function setViewMode(browsing) {
+    els.infoView.hidden = true;
     els.fortuneView.hidden = browsing;
     els.browseView.hidden = !browsing;
     els.modeToggle.setAttribute('aria-pressed', String(browsing));
     els.modeToggle.textContent = browsing ? 'Torna al pensiero del giorno' : "Sfoglia l'archivio";
     if (browsing) renderBrowseAt(browseState);
+  }
+
+  function showInfoView() {
+    infoReturnBrowsing = !els.browseView.hidden;
+    els.fortuneView.hidden = true;
+    els.browseView.hidden = true;
+    els.infoView.hidden = false;
   }
 
   els.modeToggle.addEventListener('click', () => {
@@ -263,6 +275,13 @@
     e.preventDefault();
     if (browseReturnTarget) browseState = browseReturnTarget;
     setViewMode(true);
+  });
+
+  els.infoBtn.addEventListener('click', () => showInfoView());
+
+  els.infoBack.addEventListener('click', (e) => {
+    e.preventDefault();
+    setViewMode(infoReturnBrowsing);
   });
 
   window.addEventListener('online', () => { els.offlineNotice.hidden = true; });
