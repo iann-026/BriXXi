@@ -2,7 +2,7 @@
 
 // Bump this version string whenever index.html/style.css/app.js change,
 // so returning visitors get the new shell instead of a stale cached one.
-const CACHE_VERSION = 'brizzi-daily-v1';
+const CACHE_VERSION = 'brizzi-daily-v2';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const DATA_CACHE = `${CACHE_VERSION}-data`;
 
