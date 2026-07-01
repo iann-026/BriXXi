@@ -354,6 +354,7 @@ a { color: var(--accent); }
   color: var(--ink-soft);
   line-height: 1.65;
   margin: 0 0 var(--space-2);
+  text-align: justify;
 }
 
 .info-italic {

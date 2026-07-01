@@ -12,7 +12,6 @@
     browseView: document.getElementById('browseView'),
     infoView: document.getElementById('infoView'),
     backToBrowse: document.getElementById('backToBrowse'),
-    infoBtn: document.getElementById('infoBtn'),
     infoBack: document.getElementById('infoBack'),
     card: document.getElementById('card'),
     postDate: document.getElementById('postDate'),
@@ -277,7 +276,9 @@
     setViewMode(true);
   });
 
-  els.infoBtn.addEventListener('click', () => showInfoView());
+  document.querySelectorAll('.info-glyph').forEach(btn => {
+    btn.addEventListener('click', () => showInfoView());
+  });
 
   els.infoBack.addEventListener('click', (e) => {
     e.preventDefault();
