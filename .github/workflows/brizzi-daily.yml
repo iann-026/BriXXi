@@ -8,7 +8,7 @@ name: Brizzi Daily Pipeline
 # does real work; subsequent runs skip the scrape instantly.
 "on":
   schedule:
-    - cron: '*/30 4-8 * * *'
+    - cron: '7,37 4-8 * * *'
   workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab, any time
 
 permissions:
