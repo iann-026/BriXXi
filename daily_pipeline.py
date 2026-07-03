@@ -397,6 +397,29 @@ def main():
         merged.sort(key=lambda p: p["date"])
         POSTS_JSON.write_text(json.dumps(merged, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"  posts.json updated: {len(merged)} total posts ({len(new_posts)} new).")
+
+        # Fallback-used notification -- LOCAL-ONLY (same RAG_EXPORT_DIR check
+        # used below to detect we're on the x260, not a GH Actions runner).
+        # Only reachable when already_have_today was False (raw_posts is
+        # force-set to [] whenever already_have_today is True, so new_posts
+        # can only be non-empty here if GH genuinely hadn't published yet).
+        # Silent on days GH already covered it -- fires only when local had
+        # to do real work.
+        if RAG_EXPORT_DIR.exists():
+            try:
+                subprocess.run(
+                    [
+                        "notify-send",
+                        "-u", "normal",
+                        "Brizzi Daily -- GH fallback used",
+                        f"GitHub Actions hadn't published today's post -- local fallback "
+                        f"found and published {len(new_posts)} new post(s). Worth checking "
+                        f"GH Actions.",
+                    ],
+                    check=False,
+                )
+            except FileNotFoundError:
+                print("  (notify-send not available -- skipping desktop notification)")
     else:
         merged = posts
         print("Nothing new to publish today.")
