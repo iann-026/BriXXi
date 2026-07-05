@@ -260,11 +260,18 @@ def scrape_new_posts(since_utc: datetime) -> list:
 
 # --- Classification: the ONE rule ---------------------------------------------
 
-def classify_and_convert(raw_posts: list, known_ids: set) -> list:
+def classify_and_convert(raw_posts: list, known_ids: set) -> tuple:
     """De-dup check, then the sole window rule. No other filtering of any
     kind — format/content/reply-status is irrelevant. Returns posts already
-    shaped to match the existing posts.json schema."""
+    shaped to match the existing posts.json schema, plus a diagnostic
+    'nearest_miss' value: the single window-excluded candidate that landed
+    closest to either boundary this run (or None if every candidate was
+    either kept or a duplicate). This is intentionally a single value, not
+    a per-candidate log — a candidate that keeps getting re-scraped on a
+    dry-spell day won't make the output grow, since we only ever report
+    the one closest call, not a running list."""
     kept = []
+    nearest_miss = None  # (distance_minutes, local_dt, direction)
     for raw in raw_posts:
         sid = status_id_from_url(raw["source_url"])
         if sid in known_ids:
@@ -272,7 +279,16 @@ def classify_and_convert(raw_posts: list, known_ids: set) -> list:
 
         local_dt = utc_to_rome_local(raw["created_at_utc"])
         if not in_morning_window(local_dt):
-            continue  # outside 6:00-9:30 Rome local -> discarded, no record kept
+            hour_decimal = local_dt.hour + local_dt.minute / 60
+            if hour_decimal < WINDOW_START_HOUR:
+                distance = (WINDOW_START_HOUR - hour_decimal) * 60
+                direction = "before window opens"
+            else:
+                distance = (hour_decimal - WINDOW_END_HOUR) * 60
+                direction = "after window closes"
+            if nearest_miss is None or distance < nearest_miss[0]:
+                nearest_miss = (distance, local_dt, direction)
+            continue  # outside window -> discarded, no record kept
 
         kept.append({
             "date": local_dt.replace(tzinfo=None).isoformat(),
@@ -281,7 +297,7 @@ def classify_and_convert(raw_posts: list, known_ids: set) -> list:
             "links": raw.get("links", []),
             "source_url": raw["source_url"],
         })
-    return kept
+    return kept, nearest_miss
 
 
 # --- RAG export ----------------------------------------------------------------
@@ -387,8 +403,11 @@ def main():
             print(f"FATAL: scraping failed — {e}")
             sys.exit(1)
 
-    new_posts = classify_and_convert(raw_posts, known_ids)
+    new_posts, nearest_miss = classify_and_convert(raw_posts, known_ids)
     print(f"Scraped {len(raw_posts)} candidate post(s), {len(new_posts)} fall inside the morning window.")
+    if nearest_miss:
+        distance, miss_dt, direction = nearest_miss
+        print(f"  Nearest excluded candidate: {miss_dt.strftime('%H:%M')} local ({distance:.0f} min {direction})")
 
     if new_posts:
         backup_posts(POSTS_JSON)
