@@ -36,8 +36,8 @@ from zoneinfo import ZoneInfo
 POSTS_JSON = Path("posts.json")
 BACKUP_RETENTION_DAYS = 30
 USER_NAME = "salvatorebrizzi"   # the scraper queries by username, not numeric ID
-WINDOW_START_HOUR = 6.0
-WINDOW_END_HOUR = 9.5
+WINDOW_START_HOUR = 4.0
+WINDOW_END_HOUR = 10.0
 ROME = ZoneInfo("Europe/Rome")
 
 # RAG export — LOCAL-ONLY (see note in main(): this directory only exists on
