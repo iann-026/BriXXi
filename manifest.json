@@ -1,8 +1,8 @@
 {
   "name": "Salvatore Brizzi — Saggezza mattutina",
-  "short_name": "Brizzi Saggezza",
+  "short_name": "BriXXi",
   "description": "Una perla al giorno dagli scritti di Salvatore Brizzi su X.",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F6F1E7",
