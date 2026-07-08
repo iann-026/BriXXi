@@ -27,6 +27,7 @@ import re
 import shutil
 import subprocess
 import sys
+import urllib.request
 from datetime import datetime, timedelta, date, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -58,6 +59,13 @@ MAX_RATE_LIMIT_WAIT_SECONDS = 20 * 60   # see note near _parse_rate_limit_wait()
 # every time some command happens to run from a different folder (which is
 # exactly how Gin ended up with 7+ stray copies on the X260).
 TWSCRAPE_DB_PATH = os.environ.get("TWSCRAPE_DB_PATH", "accounts.db")
+
+# healthchecks.io dead-man's-switch. Deliberately env-var-only, never
+# hardcoded -- this repo is public, and anyone holding this URL could ping
+# a fake "success" and mask a real failure. Set via GitHub Secret on the
+# Actions side; via the systemd service file if/when the local fallback
+# is ever unmasked.
+HEALTHCHECKS_PING_URL = os.environ.get("HEALTHCHECKS_PING_URL")
 
 MONTHS_IT = {
     1: 'gennaio', 2: 'febbraio', 3: 'marzo', 4: 'aprile',
@@ -369,6 +377,24 @@ def git_commit_and_push(paths: list, message: str, max_retries: int = 3) -> bool
     return False
 
 
+def ping_healthcheck():
+    """Dead-man's-switch ping -- ONLY ever called after a real new post has
+    been merged, committed, AND pushed successfully (see call site in
+    main()). Deliberately NOT called on no-op ('already have today') runs --
+    a ping here just means 'the script exited', which is the same green-
+    checkmark trap this project already learned to distrust once with
+    twscrape. Wrapped in try/except: a hiccup reaching healthchecks.io must
+    never turn an already-successful pipeline run into a reported failure."""
+    if not HEALTHCHECKS_PING_URL:
+        print("  (HEALTHCHECKS_PING_URL not set -- skipping healthcheck ping)")
+        return
+    try:
+        urllib.request.urlopen(HEALTHCHECKS_PING_URL, timeout=10)
+        print("  Healthcheck ping sent.")
+    except Exception as e:
+        print(f"  Warning: healthcheck ping failed (non-fatal): {e}")
+
+
 # --- Main -----------------------------------------------------------------------
 
 def main():
@@ -468,6 +494,8 @@ def main():
     )
     if not ok:
         sys.exit(2)
+
+    ping_healthcheck()
 
     print("=== Done ===")
 
