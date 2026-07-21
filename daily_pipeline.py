@@ -38,7 +38,7 @@ POSTS_JSON = Path("posts.json")
 BACKUP_RETENTION_DAYS = 30
 USER_NAME = "salvatorebrizzi"   # the scraper queries by username, not numeric ID
 WINDOW_START_HOUR = 4.0
-WINDOW_END_HOUR = 10.0
+WINDOW_END_HOUR = 11.5
 ROME = ZoneInfo("Europe/Rome")
 
 # RAG export — LOCAL-ONLY (see note in main(): this directory only exists on
