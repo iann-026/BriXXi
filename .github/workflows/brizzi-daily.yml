@@ -32,7 +32,16 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install twscrape
+        # Pinned to a specific commit (not a PyPI release) as a temporary
+        # workaround for vladkens/twscrape#320: X switched their web
+        # bundler (webpack -> Vite), breaking XClIdGen's ability to find
+        # the x-client-transaction-id signing script. The fix landed on
+        # twscrape's `main` branch but has not been cut into a numbered
+        # PyPI release yet (still 0.20.1 as of this pin, which only fixes
+        # a different, unrelated chunk-hash issue). Verified working
+        # locally 2026-09-10. Revert to `pip install twscrape` once a
+        # release containing this fix ships.
+        run: pip install "git+https://github.com/vladkens/twscrape.git@55ac729f39fbbe46e316746a55627a9ed920112c"
 
       - name: Restore twscrape session
         # The session lives in a single SQLite file (accounts.db) that
