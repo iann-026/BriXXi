@@ -63,4 +63,5 @@ jobs:
       - name: Run daily pipeline
         env:
           HEALTHCHECKS_PING_URL: ${{ secrets.HEALTHCHECKS_PING_URL }}
+          HEALTHCHECK_SOURCE_LABEL: github-actions
         run: python3 daily_pipeline.py

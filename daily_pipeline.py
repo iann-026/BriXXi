@@ -384,13 +384,19 @@ def ping_healthcheck():
     a ping here just means 'the script exited', which is the same green-
     checkmark trap this project already learned to distrust once with
     twscrape. Wrapped in try/except: a hiccup reaching healthchecks.io must
-    never turn an already-successful pipeline run into a reported failure."""
+    never turn an already-successful pipeline run into a reported failure.
+    POST body carries HEALTHCHECK_SOURCE_LABEL so the healthchecks.io log
+    shows whether GitHub Actions or the local fallback actually did the work."""
     if not HEALTHCHECKS_PING_URL:
         print("  (HEALTHCHECKS_PING_URL not set -- skipping healthcheck ping)")
         return
+    label = os.environ.get("HEALTHCHECK_SOURCE_LABEL", "unknown")
     try:
-        urllib.request.urlopen(HEALTHCHECKS_PING_URL, timeout=10)
-        print("  Healthcheck ping sent.")
+        req = urllib.request.Request(
+            HEALTHCHECKS_PING_URL, data=label.encode("utf-8"), method="POST"
+        )
+        urllib.request.urlopen(req, timeout=10)
+        print(f"  Healthcheck ping sent (source: {label}).")
     except Exception as e:
         print(f"  Warning: healthcheck ping failed (non-fatal): {e}")
 
