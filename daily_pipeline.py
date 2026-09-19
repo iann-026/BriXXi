@@ -461,7 +461,7 @@ def main():
                 subprocess.run(
                     [
                         "notify-send",
-                        "-u", "normal",
+                        "-u", "critical",
                         "Brizzi Daily -- GH fallback used",
                         f"GitHub Actions hadn't published today's post -- local fallback "
                         f"found and published {len(new_posts)} new post(s). Worth checking "
